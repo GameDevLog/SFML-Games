@@ -37,14 +37,17 @@ int main() {
     bool rotate = 0;
     int colorNum = 1;
 
-    float timer = 0f;
+    float timer = 0.0f;
     float delay = 0.3f;
 
     Clock clock;
 
     while (window.isOpen()) {
-        Event e;
+        float time = clock.getElapsedTime().asSeconds();
+        clock.restart();
+        timer += time;
 
+        Event e;
         while (window.pollEvent(e)) {
             if (e.type == Event::Closed) {
                 window.close();
@@ -76,6 +79,14 @@ int main() {
                 origin[i].x = p.x - x;
                 origin[i].y = p.y + y;
             }
+        }
+
+        // tick
+        if (timer > delay) {
+            for (int i = 0; i < 4; i++) {
+                origin[i].y += 1;
+            }
+            timer = 0;
         }
 
         int n = 3;
