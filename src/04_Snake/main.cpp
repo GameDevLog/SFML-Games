@@ -34,6 +34,17 @@ void Tick() {
         fruit.x = rand() % N;
         fruit.y = rand() % M;
     }
+
+    if (snake[0].x > N) { snake[0].x = 0; }
+    if (snake[0].x < 0) { snake[0].x = N; }
+    if (snake[0].y > M) { snake[0].y = 0; }
+    if (snake[0].y < 0) { snake[0].y = M; }
+
+    for (int i = 1; i < num; i++) {
+        if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+            num = i;
+        }
+    }
 }
 
 int main() {
