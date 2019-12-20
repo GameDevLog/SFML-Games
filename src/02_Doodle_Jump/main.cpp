@@ -41,6 +41,14 @@ int main() {
             }
         }
 
+        if (Keyboard::isKeyPressed(Keyboard::Right)) {
+             x += 3;
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::Left)) {
+            x -= 3;
+        }
+
         dy += 0.2f;
         y += dy;
 
