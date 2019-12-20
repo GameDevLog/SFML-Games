@@ -28,6 +28,12 @@ void Tick() {
     if (dir == 1) { snake[0].x -= 1; }
     if (dir == 2) { snake[0].x += 1; }
     if (dir == 3) { snake[0].y -= 1; }
+    
+    if ((snake[0].x == fruit.x) && (snake[0].y == fruit.y)) {
+        num++;
+        fruit.x = rand() % N;
+        fruit.y = rand() % M;
+    }
 }
 
 int main() {
@@ -44,6 +50,9 @@ int main() {
 
     Clock clock;
     float timer = 0, delay = 0.1;
+
+    fruit.x = 10;
+    fruit.y = 10;
 
     while (window.isOpen()) {
         float time = clock.getElapsedTime().asSeconds();
@@ -83,6 +92,9 @@ int main() {
             redSprite.setPosition(snake[i].x * size, snake[i].y * size);
             window.draw(redSprite);
         }
+        
+        redSprite.setPosition(fruit.x * size, fruit.y * size);
+        window.draw(redSprite);
 
         window.display();
     }
