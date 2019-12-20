@@ -14,6 +14,7 @@ int main() {
     const int w = 400;
     const int h = 533;
     RenderWindow window(VideoMode(w, h), "GameDevLog");
+    window.setFramerateLimit(60);
 
     Texture t1,t2,t3;
     t1.loadFromFile("images/background.png");
@@ -29,7 +30,7 @@ int main() {
        plat[i].y = rand() % h;
     }
 
-    int x = 100, y = 100;
+    int x = 100, y = 100, height = 200;
     float dx = 0, dy = 0;
 
     while (window.isOpen()) {
@@ -42,7 +43,7 @@ int main() {
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Right)) {
-             x += 3;
+            x += 3;
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Left)) {
@@ -54,6 +55,27 @@ int main() {
 
         if (y > 500) {
             dy = -10;
+        }
+
+        if (y < height) {
+            for (int i = 0; i < 10; i++) {
+                y = height;
+                plat[i].y = plat[i].y - dy;
+                if (plat[i].y > 533) {
+                    plat[i].y = 0;
+                    plat[i].x = rand() % 400;
+                }
+            }
+        }
+
+        for (int i = 0; i < 10; i++) {
+            if ((x + 50 > plat[i].x)
+                && (x + 20 < plat[i].x + 68)
+                && (y + 70 > plat[i].y)
+                && (y + 70 < plat[i].y + 14)
+                && (dy > 0)) {
+                dy = -10;
+            }
         }
 
         sPers.setPosition(x, y);
