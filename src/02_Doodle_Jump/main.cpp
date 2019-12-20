@@ -29,6 +29,9 @@ int main() {
        plat[i].y = rand() % h;
     }
 
+    int x = 100, y = 100;
+    float dx = 0, dy = 0;
+
     while (window.isOpen()) {
         Event e;
 
@@ -37,6 +40,15 @@ int main() {
                 window.close();
             }
         }
+
+        dy += 0.2f;
+        y += dy;
+
+        if (y > 500) {
+            dy = -10;
+        }
+
+        sPers.setPosition(x, y);
 
         window.draw(sBackground);
         window.draw(sPers);
