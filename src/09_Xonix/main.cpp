@@ -9,18 +9,46 @@ const int N = 40;
 int grid[M][N] = { 0 };
 int ts = 18; // tile size
 
+struct Enemy {
+    int x, y, dx, dy;
+
+    Enemy() {
+        x = y = 300;
+        dx = 4 - rand() % 8;
+        dy = 4 - rand() % 8;
+    }
+
+    void move() {
+        x += dx;
+        if (grid[y / ts][x / ts] == 1) {
+            dx = -dx;
+            x += dx;
+        }
+        y += dy;
+        if (grid[y / ts][x / ts] == 1) {
+            dy = -dy;
+            y += dy;
+        }
+    }
+};
+
 int main() {
     srand(time(0));
 
     RenderWindow window(VideoMode(N * ts, M * ts), "GameDevLog");
     window.setFramerateLimit(60);
 
-    Texture t1, t2;
+    Texture t1, t2, t3;
     t1.loadFromFile("images/tiles.png");
     t2.loadFromFile("images/gameover.png");
+    t3.loadFromFile("images/enemy.png");
 
-    Sprite sTile(t1), sGameover(t2);
+    Sprite sTile(t1), sGameover(t2), sEnemy(t3);
     sGameover.setPosition(100, 100);
+    sEnemy.setOrigin(20, 20);
+
+    int enemyCount = 4;
+    Enemy a[10];
 
     bool Game = true;
     int x = 0, y = 0, dx = 0, dy = 0;
@@ -69,6 +97,10 @@ int main() {
             timer = 0;
         }
 
+        for (int i = 0; i < enemyCount; i++) {
+            a[i].move();
+        }
+
         // draw
         window.clear();
 
@@ -85,6 +117,12 @@ int main() {
         sTile.setTextureRect(IntRect(36, 0, ts, ts));
         sTile.setPosition(x * ts, y * ts);
         window.draw(sTile);
+
+        sEnemy.rotate(10);
+        for (int i = 0; i < enemyCount; i++) {
+            sEnemy.setPosition(a[i].x, a[i].y);
+            window.draw(sEnemy);
+        }
 
         if (!Game) { window.draw(sGameover); }
 
