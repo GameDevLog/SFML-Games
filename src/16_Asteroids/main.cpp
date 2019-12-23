@@ -115,6 +115,13 @@ public:
     }
 };
 
+bool isCollide(Entity *a, Entity *b) {
+    return (b->x - a->x) * (b->x - a->x)
+        + (b->y - a->y) * (b->y - a->y)
+        < (a->R + b->R) * (a->R + b->R);
+}
+
+
 int main() {
     RenderWindow window(VideoMode(W, H), "GameDevLog");
     window.setFramerateLimit(60);
@@ -169,6 +176,17 @@ int main() {
 
         if (Keyboard::isKeyPressed(Keyboard::Up)) { thrust = true; }
         else { thrust = false; }
+
+        for (auto a : entities) {
+            for (auto b : entities) {
+                if (a->name == "Asteroid" && b->name == "Bullet") {
+                    if (isCollide(a, b)) {
+                        a->life = false;
+                        b->life = false;
+                    }
+                }
+            }
+        }
 
         // spaceship movement
         if (thrust) {
