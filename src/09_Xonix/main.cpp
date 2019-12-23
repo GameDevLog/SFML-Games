@@ -32,6 +32,14 @@ struct Enemy {
     }
 };
 
+void drop(int y, int x) {
+    if (grid[y][x] == 0) { grid[y][x] = -1; }
+    if (grid[y - 1][x] == 0) { drop(y - 1, x); }
+    if (grid[y + 1][x] == 0) { drop(y + 1, x); }
+    if (grid[y][x - 1] == 0) { drop(y, x - 1); }
+    if (grid[y][x + 1] == 0) { drop(y, x + 1); }
+}
+
 int main() {
     srand(time(0));
 
@@ -99,6 +107,30 @@ int main() {
 
         for (int i = 0; i < enemyCount; i++) {
             a[i].move();
+        }
+
+        if (grid[y][x] == 1) {
+            dx = dy = 0;
+
+            for (int i = 0; i < enemyCount; i++) {
+                drop(a[i].y / ts, a[i].x / ts);
+            }
+
+            for (int i = 0; i < M; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (grid[i][j] == -1) {
+                        grid[i][j] = 0;
+                    } else {
+                        grid[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < enemyCount; i++) {
+            if (grid[a[i].y / ts][a[i].x / ts] == 2) {
+                Game = false;
+            }
         }
 
         // draw
