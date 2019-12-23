@@ -10,17 +10,62 @@ const int H = 800;
 
 float DEGTORAD = 0.017453f;
 
+class Animation {
+public:
+    float frame, speed;
+    Sprite sprite;
+    std::vector<IntRect> frames;
+
+    Animation() {}
+
+    Animation(Texture &t, int x, int y, int w, int h, int count, float Speed) {
+        frame = 0;
+        speed = Speed;
+
+        for (int i = 0; i < count; i++) {
+            frames.push_back(IntRect(x + i * w, y, w, h));
+        }
+
+        sprite.setTexture(t);
+        sprite.setOrigin(w / 2, h / 2);
+        sprite.setTextureRect(frames[0]);
+    }
+
+    void update() {
+        frame += speed;
+        int n = frames.size();
+        if (frame >= n) {
+            frame -= n;
+        }
+        if (n > 0) {
+            sprite.setTextureRect(frames[int(frame)]);
+        }
+    }
+
+    bool isEnd() {
+        return frame + speed >= frames.size();
+    }
+};
+
 int main() {
     RenderWindow window(VideoMode(W, H), "GameDevLog");
     window.setFramerateLimit(60);
 
-    Texture t1, t2;
+    Texture t1, t2, t3, t4, t5, t6, t7;
     t1.loadFromFile("images/spaceship.png");
     t2.loadFromFile("images/background.jpg");
+    t3.loadFromFile("images/explosions/type_C.png");
+    t4.loadFromFile("images/rock.png");
+    t5.loadFromFile("images/fire_blue.png");
+    t6.loadFromFile("images/rock_small.png");
+    t7.loadFromFile("images/explosions/type_B.png");
 
     Sprite sPlayer(t1), sBackground(t2);
     sPlayer.setTextureRect(IntRect(40, 0, 40, 40));
     sPlayer.setOrigin(20, 20);
+
+    Animation sRock(t4, 0, 0, 64, 64, 16, 0.2);
+    sRock.sprite.setPosition(400, 400);
 
     float x = 300, y = 300;
     float dx = 0, dy = 0, angle = 0;
@@ -68,10 +113,12 @@ int main() {
         sPlayer.setPosition(x, y);
         sPlayer.setRotation(angle + 90);
 
+        sRock.update();
         // draw
         window.clear();
         window.draw(sBackground);
         window.draw(sPlayer);
+        window.draw(sRock.sprite);
         window.display();
     }
 
