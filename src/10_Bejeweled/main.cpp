@@ -48,6 +48,7 @@ int main() {
     int x0, y0, x, y;
     int click = 0;
     Vector2i pos;
+    bool isSwap = false, isMoving = false;
 
     while (window.isOpen()) {
         Event e;
@@ -59,7 +60,9 @@ int main() {
 
             if (e.type == Event::MouseButtonPressed) {
                 if (e.mouseButton.button == Mouse::Left) {
-                    click++;
+                    if (!isSwap && !isMoving) {
+                        click++;
+                    }
                     pos = Mouse::getPosition(window) - offset;
                 }
             }
@@ -75,14 +78,35 @@ int main() {
             y = pos.y / ts + 1;
             if (abs(x - x0) + abs(y - y0) == 1) {
                 swap(grid[y0][x0], grid[y][x]);
+                isSwap = true;
                 click = 0;
-            }
-            else {
+            } else {
                 click = 1;
             }
         }
 
+        // match finding
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                if (grid[i][j].kind == grid[i + 1][j].kind) {
+                    if (grid[i][j].kind == grid[i - 1][j].kind) {
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i + n][j].match++;
+                        }
+                    }
+                }
+                if (grid[i][j].kind == grid[i][j + 1].kind) {
+                    if (grid[i][j].kind == grid[i][j - 1].kind) {
+                        for (int n = -1; n <= 1; n++) {
+                            grid[i][j + n].match++;
+                        }
+                    }
+                }
+            }
+        }
+
         // moving animation
+        isMoving = false;
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 piece &p = grid[i][j];
@@ -94,6 +118,52 @@ int main() {
                     dy = p.y - p.row * ts;
                     if (dx) { p.x -= dx / abs(dx); }
                     if (dy) { p.y -= dy / abs(dy); }
+                }
+                if (dx || dy) {
+                    isMoving = true;
+                }
+            }
+        }
+
+        // get score
+        int score = 0;
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                score += grid[i][j].match;
+            }
+        }
+
+        // second swap if no match
+        if (isSwap && !isMoving) {
+            if (!score) {
+                swap(grid[y0][x0], grid[y][x]);
+            }
+            isSwap = false;
+        }
+
+        // update grid
+        if (!isMoving) {
+            for (int i = 8; i > 0; i--) {
+                for (int j = 1; j <= 8; j++) {
+                    if (grid[i][j].match) {
+                        for (int n = i; n > 0; n--) {
+                            if (!grid[n][j].match) {
+                                swap(grid[n][j], grid[i][j]);
+                                break;
+                            };
+                        }
+                    }
+                }
+            }
+
+            for (int j = 1; j <= 8; j++) {
+                for (int i = 8, n = 0; i > 0; i--) {
+                    if (grid[i][j].match) {
+                        grid[i][j].kind = rand() % 7;
+                        grid[i][j].y = -ts * n++;
+                        grid[i][j].match = 0;
+                        grid[i][j].alpha = 255;
+                    }
                 }
             }
         }
