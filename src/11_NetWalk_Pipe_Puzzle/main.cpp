@@ -38,6 +38,13 @@ int main() {
             if (e.type == Event::Closed) {
                 window.close();
             }
+            if (e.type == Event::MouseButtonPressed) {
+                if (e.mouseButton.button == Mouse::Left) {
+                    Vector2i pos = Mouse::getPosition(window) + Vector2i(ts / 2, ts / 2) - Vector2i(offset);
+                    pos /= ts;
+                    grid[pos.x][pos.y].orientation++;
+                }
+            }
         }
 
         window.clear();
@@ -47,6 +54,7 @@ int main() {
             for (int j = 0; j < N; j++) {
                 pipe &p = grid[j][i];
                 sPipe.setTextureRect(IntRect(ts * 2, 0, ts, ts));
+                sPipe.setRotation(p.orientation * 90);
                 sPipe.setPosition(j * ts, i * ts);
                 sPipe.move(offset);
                 window.draw(sPipe);
