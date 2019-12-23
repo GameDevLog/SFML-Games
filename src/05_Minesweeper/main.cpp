@@ -4,9 +4,24 @@
 using namespace sf;
 
 int main() {
-    const int w = 320;
-    const int h = 480;
-    RenderWindow window(VideoMode(w, h), "GameDevLog");
+    srand(time(0));
+    const int weight = 400;
+    const int height = 400;
+    RenderWindow window(VideoMode(weight, height), "GameDevLog");
+
+    int w = 32;
+    int grid[12][12];
+    int sgrid[12][12]; // for showing
+
+    Texture t;
+    t.loadFromFile("images/tiles.jpg");
+    Sprite s(t);
+
+    for (int i = 1; i <= 10; i++) {
+        for (int j = 1; j <= 10; j++) {
+            sgrid[i][j] = 10;
+        }
+    }
 
     while (window.isOpen()) {
         Event e;
@@ -17,6 +32,14 @@ int main() {
             }
         }
 
+        window.clear(Color::White);
+        for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
+                s.setTextureRect(IntRect(sgrid[i][j] * w, 0, w, w));
+                s.setPosition(i * w, j * w);
+                window.draw(s);
+            }
+        }
         window.display();
     }
 
