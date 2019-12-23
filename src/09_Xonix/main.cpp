@@ -15,11 +15,14 @@ int main() {
     RenderWindow window(VideoMode(N * ts, M * ts), "GameDevLog");
     window.setFramerateLimit(60);
 
-    Texture t1;
+    Texture t1, t2;
     t1.loadFromFile("images/tiles.png");
+    t2.loadFromFile("images/gameover.png");
 
-    Sprite sTile(t1);
+    Sprite sTile(t1), sGameover(t2);
+    sGameover.setPosition(100, 100);
 
+    bool Game = true;
     int x = 0, y = 0, dx = 0, dy = 0;
     float timer = 0, delay = 0.07;
     Clock clock;
@@ -50,6 +53,8 @@ int main() {
         if (Keyboard::isKeyPressed(Keyboard::Up)) { dx = 0; dy = -1; };
         if (Keyboard::isKeyPressed(Keyboard::Down))  { dx = 0; dy = 1; };
 
+        if (!Game) { continue; }
+
         if (timer > delay) {
             x += dx;
             y += dy;
@@ -59,6 +64,7 @@ int main() {
             if (y < 0) { y = 0; }
             if (y > M - 1) { y = M - 1; }
 
+            if (grid[y][x] == 2) { Game = false; }
             if (grid[y][x] == 0) { grid[y][x] = 2; }
             timer = 0;
         }
@@ -79,6 +85,8 @@ int main() {
         sTile.setTextureRect(IntRect(36, 0, ts, ts));
         sTile.setPosition(x * ts, y * ts);
         window.draw(sTile);
+
+        if (!Game) { window.draw(sGameover); }
 
         window.display();
     }
