@@ -47,6 +47,56 @@ public:
     }
 };
 
+
+class Entity {
+public:
+    float x, y, dx, dy, R, angle;
+    bool life;
+    std::string name;
+    Animation anim;
+
+    Entity() {
+        life = 1;
+    }
+
+    void settings(Animation &a, int X, int Y, float Angle = 0, int radius = 1) {
+        anim = a;
+        x = X;
+        y = Y;
+        angle = Angle;
+        R = radius;
+    }
+
+    virtual void update(){};
+
+    void draw(RenderWindow &window) {
+        anim.sprite.setPosition(x, y);
+        anim.sprite.setRotation(angle + 90);
+        window.draw(anim.sprite);
+    }
+
+    virtual ~Entity(){};
+};
+
+class Asteroid : public Entity {
+public:
+    Asteroid() {
+        dx = rand() % 8 - 4;
+        dy = rand() % 8 - 4;
+        name = "Asteroid";
+    }
+
+    void update() {
+        x += dx;
+        y += dy;
+
+        if (x > W) { x = 0; }
+        if (x < 0) { x = W; }
+        if (y > H) { y = 0; }
+        if (y < 0) { y = H; }
+    }
+};
+
 int main() {
     RenderWindow window(VideoMode(W, H), "GameDevLog");
     window.setFramerateLimit(60);
@@ -66,6 +116,14 @@ int main() {
 
     Animation sRock(t4, 0, 0, 64, 64, 16, 0.2);
     sRock.sprite.setPosition(400, 400);
+
+    std::list<Entity *> entities;
+
+    for (int i = 0; i < 15; i++) {
+        Asteroid *a = new Asteroid();
+        a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
+        entities.push_back(a);
+    }
 
     float x = 300, y = 300;
     float dx = 0, dy = 0, angle = 0;
@@ -113,12 +171,29 @@ int main() {
         sPlayer.setPosition(x, y);
         sPlayer.setRotation(angle + 90);
 
-        sRock.update();
+        for (auto i = entities.begin(); i != entities.end();) {
+            Entity *e = *i;
+
+            e->update();
+            e->anim.update();
+
+            if (e->life == false) {
+                i = entities.erase(i);
+                delete e;
+            } else {
+                i++;
+            }
+        }
+
         // draw
         window.clear();
         window.draw(sBackground);
         window.draw(sPlayer);
-        window.draw(sRock.sprite);
+
+        for (auto i : entities) {
+            i->draw(window);
+        }
+
         window.display();
     }
 
