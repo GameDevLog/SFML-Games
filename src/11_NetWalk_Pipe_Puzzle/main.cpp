@@ -9,7 +9,12 @@ Vector2f offset(65, 55);
 
 struct pipe {
     int orientation;
+    float angle;
     bool on;
+
+    pipe() {
+        angle = 0;
+    }
 };
 
 pipe grid[N][N];
@@ -53,8 +58,13 @@ int main() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 pipe &p = grid[j][i];
+
+                p.angle += 5;
+                if (p.angle > p.orientation * 90) {
+                    p.angle = p.orientation * 90;
+                }
                 sPipe.setTextureRect(IntRect(ts * 2, 0, ts, ts));
-                sPipe.setRotation(p.orientation * 90);
+                sPipe.setRotation(p.angle);
                 sPipe.setPosition(j * ts, i * ts);
                 sPipe.move(offset);
                 window.draw(sPipe);
