@@ -87,10 +87,14 @@ int main() {
             for (int j = 1; j <= 8; j++) {
                 piece &p = grid[i][j];
                 int dx, dy;
-                dx = p.x - p.col * ts;
-                dy = p.y - p.row * ts;
-                if (dx) { p.x -= dx / abs(dx); }
-                if (dy) { p.y -= dy / abs(dy); }
+
+                // 4 - speed
+                for (int n = 0; n < 4; n++) {
+                    dx = p.x - p.col * ts;
+                    dy = p.y - p.row * ts;
+                    if (dx) { p.x -= dx / abs(dx); }
+                    if (dy) { p.y -= dy / abs(dy); }
+                }
             }
         }
 
