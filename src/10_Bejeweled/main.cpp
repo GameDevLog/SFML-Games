@@ -125,6 +125,20 @@ int main() {
             }
         }
 
+        // deleting amimation
+        if (!isMoving) {
+            for (int i = 1; i <= 8; i++) {
+                for (int j = 1; j <= 8; j++) {
+                    if (grid[i][j].match) {
+                        if (grid[i][j].alpha > 10) {
+                            grid[i][j].alpha -= 10;
+                            isMoving = true;
+                        }
+                    }
+                }
+            }
+        }
+
         // get score
         int score = 0;
         for (int i = 1; i <= 8; i++) {
