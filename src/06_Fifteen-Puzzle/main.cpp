@@ -13,7 +13,7 @@ int main() {
     t.loadFromFile("images/15.png");
 
     int w = 64;
-    int grid[6][6] = {0};
+    int grid[6][6] = { 0 };
     Sprite sprite[20];
 
     int n = 0;
@@ -51,6 +51,17 @@ int main() {
                     int n = grid[x][y];
                     grid[x][y] = 16;
                     grid[x + dx][y + dy] = n;
+
+                    // animation
+                    sprite[16].move(-dx * w, -dy * w);
+                    float speed = 5;
+
+                    for (int i = 0; i < w; i += speed) {
+                        sprite[n].move(speed * dx, speed * dy);
+                        window.draw(sprite[16]);
+                        window.draw(sprite[n]);
+                        window.display();
+                    }
                 }
             }
         }
