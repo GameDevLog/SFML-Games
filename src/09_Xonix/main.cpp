@@ -24,6 +24,14 @@ int main() {
     float timer = 0, delay = 0.07;
     Clock clock;
 
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i == 0 || j == 0 || i == M - 1 || j == N - 1) {
+                grid[i][j] = 1;
+            }
+        }
+    }
+
     while (window.isOpen()) {
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -45,11 +53,28 @@ int main() {
         if (timer > delay) {
             x += dx;
             y += dy;
+
+            if (x < 0) { x = 0; }
+            if (x > N - 1) { x = N - 1; }
+            if (y < 0) { y = 0; }
+            if (y > M - 1) { y = M - 1; }
+
+            if (grid[y][x] == 0) { grid[y][x] = 2; }
             timer = 0;
         }
 
         // draw
         window.clear();
+
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (grid[i][j] == 0) { continue; }
+                if (grid[i][j] == 1) { sTile.setTextureRect(IntRect(0, 0, ts, ts)); }
+                if (grid[i][j] == 2) { sTile.setTextureRect(IntRect(54, 0, ts, ts)); }
+                sTile.setPosition(j * ts, i * ts);
+                window.draw(sTile);
+            }
+        }
 
         sTile.setTextureRect(IntRect(36, 0, ts, ts));
         sTile.setPosition(x * ts, y * ts);
