@@ -14,6 +14,14 @@ struct piece {
   }
 } grid[10][10];
 
+void swap(piece p1, piece p2) {
+    std::swap(p1.col, p2.col);
+    std::swap(p1.row, p2.row);
+
+    grid[p1.row][p1.col] = p1;
+    grid[p2.row][p2.col] = p2;
+}
+
 int main() {
     srand(time(0));
     const int w = 740;
@@ -37,12 +45,52 @@ int main() {
         }
     }
 
+    int x0, y0, x, y;
+    int click = 0;
+    Vector2i pos;
+
     while (window.isOpen()) {
         Event e;
 
         while (window.pollEvent(e)) {
             if (e.type == Event::Closed) {
                 window.close();
+            }
+
+            if (e.type == Event::MouseButtonPressed) {
+                if (e.mouseButton.button == Mouse::Left) {
+                    click++;
+                    pos = Mouse::getPosition(window) - offset;
+                }
+            }
+        }
+
+        // mouse click
+        if (click == 1) {
+            x0 = pos.x / ts + 1;
+            y0 = pos.y / ts + 1;
+        }
+        if (click == 2) {
+            x = pos.x / ts + 1;
+            y = pos.y / ts + 1;
+            if (abs(x - x0) + abs(y - y0) == 1) {
+                swap(grid[y0][x0], grid[y][x]);
+                click = 0;
+            }
+            else {
+                click = 1;
+            }
+        }
+
+        // moving animation
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                piece &p = grid[i][j];
+                int dx, dy;
+                dx = p.x - p.col * ts;
+                dy = p.y - p.row * ts;
+                if (dx) { p.x -= dx / abs(dx); }
+                if (dy) { p.y -= dy / abs(dy); }
             }
         }
 
