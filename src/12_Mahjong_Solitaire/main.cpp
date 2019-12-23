@@ -24,6 +24,7 @@ int main() {
 
     int w = 48, h = 66;
     int stepX = w / 2 - 2, stepY = h / 2 - 2;
+    float offX = 4.6, offY = 7.1; // z offset
 
     // load from file
     std::fstream myfile("files/map.txt");
@@ -61,7 +62,7 @@ int main() {
                         continue;
                     }
                     s.setTextureRect(IntRect(42 * w, 0, w, h));
-                    s.setPosition(x * stepX, y * stepY);
+                    s.setPosition(x * stepX + z * offX, y * stepY - z * offY);
                     window.draw(s);
                 }
             }
