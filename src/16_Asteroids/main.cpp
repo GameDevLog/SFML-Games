@@ -97,6 +97,24 @@ public:
     }
 };
 
+class Bullet : public Entity {
+public:
+    Bullet() {
+        name = "Bullet";
+    }
+
+    void update() {
+        dx = cos(angle * DEGTORAD) * 6;
+        dy = sin(angle * DEGTORAD) * 6;
+        // angle+=rand()%6-3;
+        x += dx;
+        y += dy;
+
+        if (x > W || x < 0 || y > H || y < 0)
+            life = 0;
+    }
+};
+
 int main() {
     RenderWindow window(VideoMode(W, H), "GameDevLog");
     window.setFramerateLimit(60);
@@ -115,6 +133,7 @@ int main() {
     sPlayer.setOrigin(20, 20);
 
     Animation sRock(t4, 0, 0, 64, 64, 16, 0.2);
+    Animation sBullet(t5, 0, 0, 32, 64, 16, 0.8);
     sRock.sprite.setPosition(400, 400);
 
     std::list<Entity *> entities;
@@ -135,6 +154,13 @@ int main() {
         while (window.pollEvent(e)) {
             if (e.type == Event::Closed) {
                 window.close();
+            }
+            if (e.type == Event::KeyPressed) {
+                if (e.key.code == Keyboard::Space) {
+                    Bullet *b = new Bullet();
+                    b->settings(sBullet, x, y, angle, 10);
+                    entities.push_back(b);
+                }
             }
         }
 
