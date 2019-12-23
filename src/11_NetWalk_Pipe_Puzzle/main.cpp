@@ -161,6 +161,17 @@ int main() {
                 sPipe.setPosition(j * ts, i * ts);
                 sPipe.move(offset);
                 window.draw(sPipe);
+
+                if (kind == 1) {
+                    if (p.on) {
+                        sComp.setTextureRect(IntRect(53, 0, 36, 36));
+                    } else {
+                        sComp.setTextureRect(IntRect(0, 0, 36, 36));
+                    }
+                    sComp.setPosition(j * ts, i * ts);
+                    sComp.move(offset);
+                    window.draw(sComp);
+                }
             }
         }
 
