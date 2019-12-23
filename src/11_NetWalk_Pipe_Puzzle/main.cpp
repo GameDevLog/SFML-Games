@@ -62,6 +62,11 @@ void generatePuzzle() {
             nodes.erase(nodes.begin() + n);
             continue;
         }
+        if (cell(v).dirs.size() == 2) {
+            if (rand() % 50) {
+                continue;
+            }
+        }
 
         bool complete = 1;
         for (auto D : DIR) {
@@ -86,6 +91,21 @@ void generatePuzzle() {
     }
 }
 
+void drop(Vector2i v) {
+    if (cell(v).on) {
+        return;
+    }
+    cell(v).on = true;
+
+    for (auto d : DIR) {
+        if (!isOut(v + d)) {
+            if (cell(v).isConnect(d) && cell(v + d).isConnect(-d)) {
+                drop(v + d);
+            }
+        }
+    }
+}
+
 int main() {
     srand(time(0));
 
@@ -102,6 +122,8 @@ int main() {
 
     Sprite sBackground(t1), sComp(t2), sServer(t3), sPipe(t4);
     sPipe.setOrigin(27, 27);
+    sComp.setOrigin(18, 18);
+    sServer.setOrigin(20, 20);
 
     generatePuzzle();
 
@@ -121,8 +143,21 @@ int main() {
                 }
                 p.rotate();
             }
+
+             // shuffle
+            for (int n = 0; n < rand() % 4; n++) {
+                grid[j][i].orientation++;
+                grid[j][i].rotate();
+            }
         }
     }
+
+    Vector2i servPos;
+    while (cell(servPos).dirs.size() == 1) {
+        servPos = Vector2i(rand() % N, rand() % N);
+    }
+    sServer.setPosition(Vector2f(servPos * ts));
+    sServer.move(offset);
 
     while (window.isOpen()) {
         Event e;
@@ -135,7 +170,19 @@ int main() {
                 if (e.mouseButton.button == Mouse::Left) {
                     Vector2i pos = Mouse::getPosition(window) + Vector2i(ts / 2, ts / 2) - Vector2i(offset);
                     pos /= ts;
-                    grid[pos.x][pos.y].orientation++;
+                    if (isOut(pos)) {
+                        continue;
+                    }
+                    cell(pos).orientation++;
+                    cell(pos).rotate();
+
+                    for (int i = 0; i < N; i++) {
+                        for (int j = 0; j < N; j++) {
+                            grid[j][i].on = 0;
+                        }
+                    }
+
+                    drop(servPos);
                 }
             }
         }
@@ -175,6 +222,7 @@ int main() {
             }
         }
 
+        window.draw(sServer);
         window.display();
     }
 
