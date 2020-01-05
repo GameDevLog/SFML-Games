@@ -35,18 +35,18 @@ bool check() {
 }
 
 int main() {
-	srand(time(0));
+    srand(time(0));
 
     const int w = 320;
     const int h = 480;
     RenderWindow window(VideoMode(w, h), "GameDevLog");
 
-	Texture t1;
-	Texture t2;
-	Texture t3;
+    Texture t1;
+    Texture t2;
+    Texture t3;
     t1.loadFromFile("images/tiles.png");
-	t2.loadFromFile("images/background.png");
-	t3.loadFromFile("images/frame.png");
+    t2.loadFromFile("images/background.png");
+    t3.loadFromFile("images/frame.png");
 
     Sprite s(t1);
     Sprite background(t2);
@@ -145,7 +145,7 @@ int main() {
         int k = M - 1;
         for (int i = M - 1; i > 0; i--) {
             int count = 0;
-			for (int j = 0; j < N; j++) {
+            for (int j = 0; j < N; j++) {
                 if (field[i][j]) {
                     count++;
                 }
@@ -162,7 +162,7 @@ int main() {
 
         // draw
         window.clear(Color::White);
-		window.draw(background);
+        window.draw(background);
 
         for (int i = 0; i < M; i++) {
             for (int j = 0; j < N; j++) {
@@ -172,7 +172,7 @@ int main() {
 
                 s.setTextureRect(IntRect(field[i][j] * 18, 0, 18, 18));
                 s.setPosition(j * 18, i * 18);
-				s.move(28, 31); //offset
+                s.move(28, 31); //offset
                 window.draw(s);
             }
         }
@@ -180,11 +180,11 @@ int main() {
         for (int i = 0; i < 4; i++) {
             s.setTextureRect(IntRect(colorNum * 18, 0, 18, 18));
             s.setPosition(origin[i].x * 18, origin[i].y * 18);
-			s.move(28, 31); //offset
+            s.move(28, 31); //offset
             window.draw(s);
         }
 
-		window.draw(frame);
+        window.draw(frame);
         window.display();
     }
 

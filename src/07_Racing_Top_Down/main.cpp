@@ -48,7 +48,7 @@ int main() {
     const int w = 640;
     const int h = 480;
     RenderWindow window(VideoMode(w, h), "GameDevLog");
-	window.setFramerateLimit(60);
+    window.setFramerateLimit(60);
 
     Texture t1, t2, t3;
     t1.loadFromFile("images/background.png");

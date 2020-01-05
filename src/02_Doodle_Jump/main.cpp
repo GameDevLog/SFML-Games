@@ -23,7 +23,7 @@ int main() {
 
     Sprite sBackground(t1), sPlat(t2), sPers(t3);
 
-    point plat[20];
+    point plat[10];
 
     for (int i = 0; i < 10 ; i++) {
        plat[i].x = rand() % w;
